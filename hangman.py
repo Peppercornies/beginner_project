@@ -5,14 +5,12 @@ def initiate_game():
 	word = getpass.getpass('Player 1, enter your word:')
 	word = word.lower()
 	return(word)
-
-def start_game(word):
 	known_word = list(len(word)*'_')
 	possible_letters = 'abcdefghijklmnopqrstuvwxyz'
 	guesses = 10;
 
 	win = GraphWin()
-	return(known_word,possible_letters,guesses,win)
+	return(word,known_word,possible_letters,guesses,win)
 
 def guess(word,possible_letters,guesses,known_word,win):
 	guess = input('Known word: ' + ' '.join(known_word) + '\n' + 'Possible letters: ' + possible_letters + '\n' + 'Guess a letter:')
@@ -77,15 +75,13 @@ def guess(word,possible_letters,guesses,known_word,win):
 
 	return(known_word,possible_letters,guesses,win)
 
-word = initiate_game()
-
-[known_word,possible_letters,guesses,win] = start_game(word)
+[word,known_word,possible_letters,guesses,win] = initiate_game()
 
 while guesses > 0:
 	(known_word,possible_letters,guesses,win) = guess(word,possible_letters,guesses,known_word,win)
 	if ('_' in known_word) == False:
 		input('You guessed the word! Congratulations!!!\nPress any key to exit')
 		break
-		
+
 if guesses == 0:
 	input('Better luck next time.\nThe correct word was: ' + word + '\nPress any key to exit')
