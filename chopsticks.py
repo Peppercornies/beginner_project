@@ -7,6 +7,7 @@ def initiate_game():
 
 def play(player,game):
 	options = []
+	opstats = []
 
 	# Options from swapping
 	new_option = np.array([0,0,0,0])
@@ -17,6 +18,11 @@ def play(player,game):
 			if i != game[2*player-2] - game[2*player-1]:
 				options.append(game + i*new_option)
 
+
+				new_opstats = sum(new_option[[0,1]]) - sum(new_option[[2,3]])
+				opstats.append(new_opstats)
+
+
 	# Options from attacking
 	new_option = np.array([0,0,0,0])
 	for i in set((game[2*player-2],game[2*player-1])):
@@ -26,8 +32,14 @@ def play(player,game):
 			new_option	= game + i*new_option
 			new_option[new_option > 4] = 0
 			options.append(new_option)
+			
+			new_opstats = sum(new_option[[0,1]]) - sum(new_option[[2,3]])
+			opstats.append(new_opstats)
+			
 
 	print(options)
+	print(opstats)
+
 	move = int(input('Player ' + str(player) + ', Pick an option:'))
 	print('You picked' + str(options[move]))
 	game = options[move]
