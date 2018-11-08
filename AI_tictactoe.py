@@ -49,13 +49,24 @@ class Node(object):
 ##=============================
 ## Algorithm
 
-def MinMax(node, depth, player):
+def MinMax(node, depth, player, alpha, beta):
 	if ((depth == 0) or (abs(WinCheck(node.game)) == 1)):
 		return node.value 						#If someone won or at the end of tree, output that state
 	
 	best_value = -10*player						# Else, the situation which give best_value. Work that out by going down the tree
 	for child in node.children:
-		new_value = MinMax(child, depth - 1, -player)
+		if player == 1:
+			new_value = -10
+			new_value = max(new_value, MinMax(child, depth - 1, -player, alpha, beta))
+			alpha = max(alpha, new_value)
+		else:
+			new_value = 10
+			new_value = min(new_value, MinMax(child, depth - 1, -player, alpha, beta))
+			beta = min(beta, new_value)	
+		if alpha >= beta:
+			return new_value
+
+
 		if abs(10*player - new_value) < abs(10*player - best_value):
 			best_value = new_value
 	#print('Old game: ' + str(old_game))
@@ -97,6 +108,8 @@ if __name__ == '__main__':
 	game = np.zeros([3,3])
 	turn = 1
 	win = 0
+	alpha = -10
+	beta = 10
 
 	while ((turn < 10) & (win == 0)):
 		moves = range(len(np.where(game == 0)[0]))
@@ -123,7 +136,7 @@ if __name__ == '__main__':
 			best_choice = 0
 			for i in range(len(node.children)):
 				n_child = node.children[i]
-				new_value = MinMax(n_child, depth, -current_player)
+				new_value = MinMax(n_child, depth, -current_player, -10, 10)
 				if (abs(10*current_player - new_value) <= abs(10*current_player - best_value)):
 					best_value = new_value
 					best_choice = i
