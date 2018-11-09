@@ -49,19 +49,19 @@ class Node(object):
 ##=============================
 ## Algorithm
 
-def MinMax(node, depth, player, alpha, beta):
-	if ((depth == 0) or (abs(WinCheck(node.game)) == 1)):
+def MinMax(node, depth, player, turn, alpha, beta):
+	if ((depth == 0) or (abs(WinCheck(node.game)) == 1) or (turn == 9)):
 		return node.value 						#If someone won or at the end of tree, output that state
 	
 	best_value = -10*player						# Else, the situation which give best_value. Work that out by going down the tree
 	for child in node.children:
 		if player == 1:
 			new_value = -10
-			new_value = max(new_value, MinMax(child, depth - 1, -player, alpha, beta))
+			new_value = max(new_value, MinMax(child, depth - 1, -player, turn + 1, alpha, beta))
 			alpha = max(alpha, new_value)
 		else:
 			new_value = 10
-			new_value = min(new_value, MinMax(child, depth - 1, -player, alpha, beta))
+			new_value = min(new_value, MinMax(child, depth - 1, -player, turn + 1, alpha, beta))
 			beta = min(beta, new_value)	
 		if alpha >= beta:
 			return new_value
@@ -113,7 +113,8 @@ if __name__ == '__main__':
 
 	while ((turn < 10) & (win == 0)):
 		moves = range(len(np.where(game == 0)[0]))
-		print('\nThis is turn', turn)
+		print('*'*30)
+		print('This is turn', turn)
 		print(game)
 		while True:
 			move = int(input('Pick a move:'))
@@ -126,6 +127,7 @@ if __name__ == '__main__':
 		move = [np.where(game == 0)[0][move],np.where(game == 0)[1][move]]
 
 		game[move[0],move[1]] = current_player
+		print('You picked:\n' + str(game))
 
 		win = WinCheck(game)
 
@@ -136,7 +138,7 @@ if __name__ == '__main__':
 			best_choice = 0
 			for i in range(len(node.children)):
 				n_child = node.children[i]
-				new_value = MinMax(n_child, depth, -current_player, -10, 10)
+				new_value = MinMax(n_child, depth, -current_player, turn, -10, 10)
 				if (abs(10*current_player - new_value) <= abs(10*current_player - best_value)):
 					best_value = new_value
 					best_choice = i
@@ -144,7 +146,8 @@ if __name__ == '__main__':
 			n_child = node.children[best_choice]
 			game = n_child.game
 			best_choice += 1
-			print('Computer chose:' + str(game) + '\tBased on value:' + str(best_value))
+			print('*'*30)
+			print('Computer chose:\n' + str(game) + '\nBased on value:' + str(best_value))
 			turn += 1
 			win = WinCheck(game)
 		
